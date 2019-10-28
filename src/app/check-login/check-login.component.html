@@ -1,0 +1,3 @@
+<app-login [childMessage]="parentMessage" (formValue)="checkLoginForm($event)"></app-login>
+ <h1 *ngIf="message==''">User Name:{{userName}} </h1>
+ <p>{{message}}</p>
