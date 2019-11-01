@@ -21,7 +21,7 @@ import { DemoExportPdfComponent } from './demo-export-pdf/demo-export-pdf.compon
     IndexComponent,
     UserComponent,
     DemoExportExcelComponent,
-    DemoExportPdfComponent
+    DemoExportPdfComponent,
   ],
   imports: [
     BrowserModule,

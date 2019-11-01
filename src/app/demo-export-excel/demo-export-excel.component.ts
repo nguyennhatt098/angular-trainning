@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import * as jspdf from 'jspdf';  
 import html2canvas from 'html2canvas';  
+import 'jspdf-autotable';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-demo-export-excel',
   templateUrl: './demo-export-excel.component.html',
@@ -33,26 +35,46 @@ export class DemoExportExcelComponent implements OnInit {
   ngOnInit() {
   }
 
-  constructor(private excelService:ExcelServiceService){
+  constructor(private excelService:ExcelServiceService,private router:Router){
     
   }
   
   exportAsXLSX():void {
-     this.excelService.exportAsExcel(this.excel, 'sample');
+    console.log(this.router.url)
+    var currentUrl=this.router.url;
+    if(currentUrl==='/parentExportPdf'){
+      this.captureScreen();
+    }
+   if(currentUrl==='/childExportExcel'){
+    this.excelService.exportAsExcel(this.excel, 'sample');
+   }
   }
+  // public captureScreen()  
+  // {  
+  //   var data = document.getElementById('contentToConvert');  
+  //   html2canvas(data).then(canvas => {  
+  //     // Few necessary setting options  
+  //     var imgWidth = 208;   
+  //     var imgHeight = canvas.height * imgWidth / canvas.width;  
+  
+  //     const contentDataURL = canvas.toDataURL('image/png')  
+  //     let pdf = new jspdf('p', 'mm', 'a4'); // A4 size page of PDF  
+  //     var position = 0;  
+  //     pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight)  
+  //     pdf.save('MYPdf.pdf'); // Generated PDF   
+  //   });  
+  // }  
   public captureScreen()  
   {  
-    var data = document.getElementById('contentToConvert');  
-    html2canvas(data).then(canvas => {  
-      // Few necessary setting options  
-      var imgWidth = 208;   
-      var imgHeight = canvas.height * imgWidth / canvas.width;  
-  
-      const contentDataURL = canvas.toDataURL('image/png')  
-      let pdf = new jspdf('p', 'mm', 'a4'); // A4 size page of PDF  
-      var position = 0;  
-      pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight)  
-      pdf.save('MYPdf.pdf'); // Generated PDF   
-    });  
+    var col = ["Name", "Month","Sales_Figure","Perc"];
+        var rows = [];
+    this.excel.forEach(element => {      
+      var temp = [element.Name,element.Month,element.Sales_Figure,element.Perc];
+      rows.push(temp);
+
+  }); 
+    let pdf = new jspdf('p', 'mm', 'a4');
+    pdf.autoTable(col, rows);
+    pdf.save('MYPdf.pdf');
   }  
 }
